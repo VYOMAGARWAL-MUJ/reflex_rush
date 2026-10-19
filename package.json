@@ -1,0 +1,8 @@
+{
+  "name": "reflex-rush-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reflex Rush browser game deployed with Vercel Functions and Supabase leaderboard storage",
+  "engines": { "node": ">=20" },
+  "dependencies": { "@supabase/supabase-js": "^2.57.0" }
+}
