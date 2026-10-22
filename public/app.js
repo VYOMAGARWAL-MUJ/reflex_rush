@@ -31,7 +31,6 @@ function playSound(type) {
     const now = audioContext.currentTime;
 
     if (type === "start") {
-      // Upbeat sound when the round starts
       oscillator.type = "sine";
 
       oscillator.frequency.setValueAtTime(500, now);
@@ -41,20 +40,13 @@ function playSound(type) {
       );
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.exponentialRampToValueAtTime(
-        0.15,
-        now + 0.02
-      );
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        now + 0.16
-      );
+      gain.gain.exponentialRampToValueAtTime(0.15, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
 
       oscillator.start(now);
       oscillator.stop(now + 0.17);
 
     } else if (type === "hit") {
-      // Quick pop when a target is successfully hit
       oscillator.type = "triangle";
 
       oscillator.frequency.setValueAtTime(750, now);
@@ -64,20 +56,13 @@ function playSound(type) {
       );
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.exponentialRampToValueAtTime(
-        0.12,
-        now + 0.008
-      );
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        now + 0.09
-      );
+      gain.gain.exponentialRampToValueAtTime(0.12, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
       oscillator.start(now);
       oscillator.stop(now + 0.1);
 
     } else if (type === "end") {
-      // Descending tone when the round ends
       oscillator.type = "sine";
 
       oscillator.frequency.setValueAtTime(520, now);
@@ -87,14 +72,8 @@ function playSound(type) {
       );
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.exponentialRampToValueAtTime(
-        0.15,
-        now + 0.03
-      );
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        now + 0.5
-      );
+      gain.gain.exponentialRampToValueAtTime(0.15, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
 
       oscillator.start(now);
       oscillator.stop(now + 0.52);
@@ -105,12 +84,13 @@ function playSound(type) {
 }
 
 // ==================== PLAYER DATA ====================
-// Player name resets whenever the page is refreshed
-let playerName = "";
 
+// Player name resets whenever the page refreshes.
+let playerName = "";
 localStorage.removeItem("reflexRushName");
 
-// Persistent browser/device identifier for leaderboard updates
+// Keep device ID persistent so scores can be associated
+// with the same browser/device.
 let deviceId = localStorage.getItem("reflexRushDeviceId");
 
 if (!deviceId) {
@@ -171,7 +151,6 @@ function setPlayerName(name) {
 
 function showToast(message) {
   $("toast").textContent = message;
-
   $("toast").classList.add("show");
 
   clearTimeout(toastId);
@@ -223,11 +202,9 @@ function startGame() {
   if (!playerName) {
     $("nameDialog").showModal();
     $("playerName").focus();
-
     return;
   }
 
-  // Clear any previous countdown
   if (countdownId !== null) {
     clearInterval(countdownId);
     countdownId = null;
@@ -241,7 +218,6 @@ function startGame() {
   active = true;
   roundEnded = false;
 
-  // Play the game-start sound
   playSound("start");
 
   updateStats();
@@ -254,7 +230,6 @@ function startGame() {
 
   placeTarget();
 
-  // Accurate countdown based on the deadline
   countdownId = setInterval(() => {
     if (!active) return;
 
@@ -276,18 +251,13 @@ function startGame() {
 function hitTarget() {
   if (!active) return;
 
-  // Increase score
   score += POINTS_PER_HIT;
 
-  // Play the target-hit sound
   playSound("hit");
 
   updateStats();
-
-  // Move the target
   placeTarget();
 
-  // Hit animation
   target.animate(
     [
       {
@@ -314,7 +284,6 @@ async function endGame() {
   active = false;
   roundEnded = true;
 
-  // Play the game-over sound
   playSound("end");
 
   if (countdownId !== null) {
@@ -353,14 +322,13 @@ async function endGame() {
     </button>
   `;
 
-  // Play Again refreshes the page after saving
   $("playAgainBtn").addEventListener("click", () => {
     if (scoreSaveFinished) {
       window.location.reload();
     }
   });
 
-  // Update personal best
+  // Save personal best locally.
   if (score > bestScore) {
     bestScore = score;
 
@@ -382,7 +350,6 @@ async function endGame() {
   playAgainButton.textContent = "Saving score…";
 
   try {
-    // Save score to the existing API
     const response = await fetch("/api/scores", {
       method: "POST",
 
@@ -410,7 +377,9 @@ async function endGame() {
     await loadLeaderboard();
 
   } catch (error) {
-    showToast("Could not save score. Is the server running?");
+    console.error("Score saving failed:", error);
+
+    showToast("Could not save score. Please try again.");
 
   } finally {
     scoreSaveFinished = true;
@@ -425,7 +394,7 @@ async function endGame() {
 // ==================== HTML SAFETY ====================
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (char) => ({
+  return String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -438,7 +407,9 @@ function escapeHtml(value) {
 
 function renderLeaderboard() {
   const list = $("leaderboard");
+  const podium = $("leaderboardPodium");
 
+  // Display either the top three or the complete list.
   const scores = allScoresVisible
     ? leaderboardScores
     : leaderboardScores.slice(0, 3);
@@ -447,8 +418,7 @@ function renderLeaderboard() {
     ? `ALL ${leaderboardScores.length}`
     : "TOP 3";
 
-  $("viewAllBtn").hidden =
-    leaderboardScores.length <= 3;
+  $("viewAllBtn").hidden = leaderboardScores.length <= 3;
 
   $("viewAllBtn").textContent = allScoresVisible
     ? "Show top 3 ↑"
@@ -459,41 +429,126 @@ function renderLeaderboard() {
     String(allScoresVisible)
   );
 
+  // Empty state.
   if (!leaderboardScores.length) {
+    podium.innerHTML = `
+      <div class="podium-empty">
+        No scores yet. Be the first to take the podium!
+      </div>
+    `;
+
     list.innerHTML = `
       <div class="empty-leader">
         No scores yet.<br>
-        Be the first to claim the top spot!
+        Play a round to appear here!
       </div>
     `;
 
     return;
   }
 
-  list.innerHTML = scores.map((entry, index) => {
-    const rankClass = ["gold", "silver", "bronze"][index] || "";
+  function formatScore(value) {
+    return Number(value).toLocaleString();
+  }
 
-    const isCurrent = entry.name === playerName;
+  // Arrange second, first, third for a podium layout.
+  const podiumEntries = [
+    {
+      entry: leaderboardScores[1],
+      rank: 2,
+      position: "second",
+      medal: "♛"
+    },
+    {
+      entry: leaderboardScores[0],
+      rank: 1,
+      position: "first",
+      medal: "♛"
+    },
+    {
+      entry: leaderboardScores[2],
+      rank: 3,
+      position: "third",
+      medal: "♛"
+    }
+  ];
 
-    return `
-      <div class="leader-row ${isCurrent ? "current" : ""}">
-        <span class="rank ${rankClass}">
-          ${String(index + 1).padStart(2, "0")}
-        </span>
+  podium.innerHTML = podiumEntries
+    .filter(({ entry }) => Boolean(entry))
+    .map(({ entry, rank, position, medal }) => {
+      const name = String(entry.name || "Player");
 
-        <span
-          class="leader-name"
-          title="${escapeHtml(entry.name)}"
-        >
-          ${escapeHtml(entry.name)}
-        </span>
+      const initial = escapeHtml(
+        name.trim().charAt(0).toUpperCase() || "?"
+      );
 
-        <span class="leader-score">
-          ${entry.score}
-        </span>
-      </div>
-    `;
-  }).join("");
+      return `
+        <div class="podium-person ${position}">
+          <div class="podium-avatar-wrap">
+            <div class="podium-avatar">${initial}</div>
+            <span class="podium-medal">${medal}</span>
+          </div>
+
+          <div
+            class="podium-name"
+            title="${escapeHtml(name)}"
+          >
+            ${escapeHtml(name)}
+          </div>
+
+          <div class="podium-score">
+            ${formatScore(entry.score)}
+          </div>
+
+          <div class="podium-bar">${rank}</div>
+        </div>
+      `;
+    })
+    .join("");
+
+  // Render the rankings list.
+  list.innerHTML = scores
+    .map((entry, index) => {
+      const name = String(entry.name || "Player");
+
+      const initial = escapeHtml(
+        name.trim().charAt(0).toUpperCase() || "?"
+      );
+
+      const rankClass = [
+        "gold",
+        "silver",
+        "bronze"
+      ][index] || "";
+
+      const isCurrent =
+        Boolean(playerName) &&
+        name.toLowerCase() === playerName.toLowerCase();
+
+      return `
+        <div class="leader-row ${isCurrent ? "current" : ""}">
+          <span class="rank ${rankClass}">
+            ${index + 1}
+          </span>
+
+          <span class="leader-row-avatar">
+            ${initial}
+          </span>
+
+          <span
+            class="leader-name"
+            title="${escapeHtml(name)}"
+          >
+            ${escapeHtml(name)}
+          </span>
+
+          <span class="leader-score">
+            ${formatScore(entry.score)}
+          </span>
+        </div>
+      `;
+    })
+    .join("");
 }
 
 // ==================== LOAD LEADERBOARD ====================
@@ -512,19 +567,31 @@ async function loadLeaderboard() {
 
     renderLeaderboard();
 
-  } catch (_error) {
+  } catch (error) {
+    console.error("Leaderboard loading failed:", error);
+
     list.innerHTML = `
       <div class="empty-leader">
         Leaderboard unavailable.<br>
-        Start the Node.js server to load scores.
+        Please refresh and try again.
       </div>
     `;
+
+    const podium = $("leaderboardPodium");
+
+    if (podium) {
+      podium.innerHTML = `
+        <div class="podium-empty">
+          Unable to load rankings.
+        </div>
+      `;
+    }
   }
 }
 
 // ==================== EVENT LISTENERS ====================
 
-// Start game / Play Again button
+// Start game / Play Again.
 $("startBtn").addEventListener("click", () => {
   if (roundEnded) {
     if (scoreSaveFinished) {
@@ -537,35 +604,35 @@ $("startBtn").addEventListener("click", () => {
   startGame();
 });
 
-// Target click
+// Target click.
 target.addEventListener("click", hitTarget);
 
-// Refresh leaderboard
+// Refresh leaderboard.
 $("refreshBtn").addEventListener(
   "click",
   loadLeaderboard
 );
 
-// Show all scores / Top 3
+// Toggle Top 3 / View All.
 $("viewAllBtn").addEventListener("click", () => {
   allScoresVisible = !allScoresVisible;
 
   renderLeaderboard();
 });
 
-// Change player name
+// Change player name.
 $("changeNameBtn").addEventListener("click", () => {
   $("playerName").value = playerName;
 
   $("nameDialog").showModal();
 });
 
-// Cancel changing name
+// Cancel changing name.
 $("cancelName").addEventListener("click", () => {
   $("nameDialog").close();
 });
 
-// Save player name and start the first round
+// Save player name and start the game.
 $("nameForm").addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -579,9 +646,6 @@ $("nameForm").addEventListener("submit", (event) => {
 
   if (!active && !roundEnded) {
     showToast(`Welcome, ${playerName}!`);
-  }
-
-  if (!active && !roundEnded) {
     startGame();
   }
 
