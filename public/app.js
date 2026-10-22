@@ -105,8 +105,10 @@ function playSound(type) {
 }
 
 // ==================== PLAYER DATA ====================
+// Player name resets whenever the page is refreshed
+let playerName = "";
 
-let playerName = localStorage.getItem("reflexRushName") || "";
+localStorage.removeItem("reflexRushName");
 
 // Persistent browser/device identifier for leaderboard updates
 let deviceId = localStorage.getItem("reflexRushDeviceId");
@@ -156,7 +158,11 @@ function updateStats() {
 function setPlayerName(name) {
   playerName = name.trim().slice(0, 18);
 
-  localStorage.setItem("reflexRushName", playerName);
+  if (playerName) {
+    localStorage.setItem("reflexRushName", playerName);
+  } else {
+    localStorage.removeItem("reflexRushName");
+  }
 
   $("playerDisplay").textContent = playerName || "Guest player";
 }
