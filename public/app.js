@@ -19,6 +19,7 @@ let bestScore = Number(localStorage.getItem("reflexRushBest") || 0);
 let toastId = null;
 let allScoresVisible = false;
 let leaderboardScores = [];
+let scoreSaveFinished = true;
 
 const target = $("target");
 const arena = $("arena");
@@ -55,6 +56,10 @@ function placeTarget() {
 
 function startGame() {
   if (active) return;
+  if (roundEnded) {
+    if (scoreSaveFinished) window.location.reload();
+    return;
+  }
   if (!playerName) {
     $("nameDialog").showModal();
     $("playerName").focus();
@@ -119,13 +124,19 @@ async function endGame() {
     <p>You scored <strong style="color:#67e8f9">${score} points</strong>. Ready to beat it?</p>
     <button class="primary-button" id="playAgainBtn" type="button">Play again <span>→</span></button>
   `;
-  $("playAgainBtn").addEventListener("click", startGame);
+  $("playAgainBtn").addEventListener("click", () => {
+    if (scoreSaveFinished) window.location.reload();
+  });
   if (score > bestScore) {
     bestScore = score;
     localStorage.setItem("reflexRushBest", String(bestScore));
     updateStats();
   }
   showToast("Round over! Saving your score…");
+  scoreSaveFinished = false;
+  const playAgainButton = $("playAgainBtn");
+  playAgainButton.disabled = true;
+  playAgainButton.textContent = "Saving score…";
   try {
     const response = await fetch("/api/scores", {
       method: "POST",
@@ -140,6 +151,10 @@ async function endGame() {
     await loadLeaderboard();
   } catch (error) {
     showToast("Could not save score. Is the server running?");
+  } finally {
+    scoreSaveFinished = true;
+    playAgainButton.disabled = false;
+    playAgainButton.innerHTML = 'Play again <span>→</span>';
   }
 }
 
@@ -184,7 +199,13 @@ async function loadLeaderboard() {
   }
 }
 
-$("startBtn").addEventListener("click", startGame);
+$("startBtn").addEventListener("click", () => {
+  if (roundEnded) {
+    if (scoreSaveFinished) window.location.reload();
+    return;
+  }
+  startGame();
+});
 target.addEventListener("click", hitTarget);
 $("refreshBtn").addEventListener("click", loadLeaderboard);
 $("viewAllBtn").addEventListener("click", () => {
