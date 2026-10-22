@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,82 +6,303 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101326">
 
-  <!-- Reflex Rush browser tab logo -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-
   <title>Reflex Rush — Test Your Speed</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
   <main class="shell">
+
+    <!-- Header -->
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Reflex Rush home"><span class="brand-mark">✦</span> REFLEX<span class="brand-accent">RUSH</span></a>
-      <span class="live-pill"><span class="live-dot"></span> SPEED CHALLENGE</span>
+      <a class="brand" href="#" aria-label="Reflex Rush home">
+        <span class="brand-mark">✦</span>
+        REFLEX<span class="brand-accent">RUSH</span>
+      </a>
+
+      <span class="live-pill">
+        <span class="live-dot"></span>
+        SPEED CHALLENGE
+      </span>
     </header>
 
+    <!-- Intro -->
     <section class="intro">
-      <div class="eyebrow"><span>⚡</span> READY. SET. REACT.</div>
-      <h1>Your reflexes.<br><span>Under pressure.</span></h1>
-      <p>Hit every target you can before the clock runs out.<br>How quick are you, really?</p>
-    </section>
-
-    <section class="game-layout">
-      <div class="game-card">
-        <div class="game-head">
-          <div><span class="label">PLAYER</span><div class="player-name" id="playerDisplay">Guest player</div></div>
-          <button class="text-button" id="changeNameBtn" type="button">Change name ↗</button>
-        </div>
-        <div class="stats">
-          <div class="stat"><span class="label">SCORE</span><strong id="score">000</strong></div>
-          <div class="stat timer-stat"><span class="label">TIME LEFT</span><strong id="timer">30<span>s</span></strong></div>
-          <div class="stat"><span class="label">BEST</span><strong id="bestScore">000</strong></div>
-        </div>
-        <div class="arena-wrap">
-          <div class="arena-top"><span><i></i> TARGET ZONE</span><span id="roundStatus">READY TO PLAY</span></div>
-          <div class="arena" id="arena">
-            <div class="arena-message" id="arenaMessage">
-              <div class="target-preview">✦</div>
-              <h2>Trust your instincts.</h2>
-              <p>Tap start, then hit the glowing targets.</p>
-              <button class="primary-button" id="startBtn" type="button">Start game <span>→</span></button>
-            </div>
-            <button class="target hidden" id="target" type="button" aria-label="Hit target">✦</button>
-          </div>
-        </div>
-        <div class="game-foot"><span>✦ <b>+10 POINTS</b> per hit</span><span>30 seconds · One round</span></div>
+      <div class="eyebrow">
+        <span>⚡</span> READY. SET. REACT.
       </div>
 
-      <aside class="side-column">
-        <div class="leader-card">
-          <div class="side-title"><div><span class="side-icon">♛</span><h2>Leaderboard</h2></div><span class="top-ten" id="leaderboardCount">TOP 3</span></div>
-          <p class="side-subtitle">The fastest fingers in the room.</p>
-          <div class="leader-list" id="leaderboard">
-            <div class="empty-leader">Loading rankings…</div>
-          </div>
-          <button class="refresh-button view-all-button" id="viewAllBtn" type="button" aria-expanded="false">View all scores ↓</button>
-          <button class="refresh-button" id="refreshBtn" type="button">↻ Refresh rankings</button>
-        </div>
-        <div class="tip-card"><div class="tip-icon">✧</div><div><strong>Pro tip</strong><p>Stay loose, keep your eyes on the target, and trust your first reaction.</p></div></div>
-      </aside>
+      <h1>
+        Your reflexes.<br>
+        <span>Under pressure.</span>
+      </h1>
+
+      <p>
+        Hit every target you can before the clock runs out.<br>
+        How quick are you, really?
+      </p>
     </section>
-    <footer><span>REFLEX RUSH <span class="footer-dot">●</span> A LITTLE GAME OF SPEED</span><span>Built for quick reactions.</span></footer>
+
+    <!-- Game and Leaderboard -->
+    <section class="game-layout">
+
+      <!-- Game Card -->
+      <div class="game-card">
+
+        <div class="game-head">
+          <div>
+            <span class="label">PLAYER</span>
+            <div class="player-name" id="playerDisplay">
+              Guest player
+            </div>
+          </div>
+
+          <button
+            class="text-button"
+            id="changeNameBtn"
+            type="button"
+          >
+            Change name ↗
+          </button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+
+          <div class="stat">
+            <span class="label">SCORE</span>
+            <strong id="score">000</strong>
+          </div>
+
+          <div class="stat timer-stat">
+            <span class="label">TIME LEFT</span>
+            <strong id="timer">30<span>s</span></strong>
+          </div>
+
+          <div class="stat">
+            <span class="label">BEST</span>
+            <strong id="bestScore">000</strong>
+          </div>
+
+        </div>
+
+        <!-- Target Arena -->
+        <div class="arena-wrap">
+
+          <div class="arena-top">
+            <span>
+              <i></i>
+              TARGET ZONE
+            </span>
+
+            <span id="roundStatus">READY TO PLAY</span>
+          </div>
+
+          <div class="arena" id="arena">
+
+            <div class="arena-message" id="arenaMessage">
+              <div class="target-preview">✦</div>
+
+              <h2>Trust your instincts.</h2>
+
+              <p>
+                Tap start, then hit the glowing targets.
+              </p>
+
+              <button
+                class="primary-button"
+                id="startBtn"
+                type="button"
+              >
+                Start game <span>→</span>
+              </button>
+            </div>
+
+            <button
+              class="target hidden"
+              id="target"
+              type="button"
+              aria-label="Hit target"
+            >
+              ✦
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Game Footer -->
+        <div class="game-foot">
+          <span>✦ <b>+10 POINTS</b> per hit</span>
+          <span>30 seconds · One round</span>
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="side-column">
+
+        <!-- Redesigned Leaderboard -->
+        <div class="leader-card leaderboard-redesign">
+
+          <div class="leaderboard-header">
+
+            <div>
+              <div class="leaderboard-title-row">
+                <span class="leaderboard-crown">♛</span>
+                <h2>Leaderboard</h2>
+              </div>
+
+              <p class="leaderboard-date">
+                The fastest fingers in the room.
+              </p>
+            </div>
+
+            <span class="top-ten" id="leaderboardCount">
+              TOP 3
+            </span>
+
+          </div>
+
+          <!-- Top Three Podium -->
+          <div
+            class="podium"
+            id="leaderboardPodium"
+            aria-label="Top three players"
+          >
+            <div class="podium-empty">
+              Loading rankings...
+            </div>
+          </div>
+
+          <!-- Ranking List -->
+          <div class="leaderboard-list-wrapper">
+
+            <div class="leader-list" id="leaderboard">
+              <div class="empty-leader">
+                Loading rankings…
+              </div>
+            </div>
+
+            <button
+              class="refresh-button view-all-button"
+              id="viewAllBtn"
+              type="button"
+              aria-expanded="false"
+            >
+              View all scores ↓
+            </button>
+
+            <button
+              class="refresh-button"
+              id="refreshBtn"
+              type="button"
+            >
+              ↻ Refresh rankings
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Pro Tip -->
+        <div class="tip-card">
+          <div class="tip-icon">✧</div>
+
+          <div>
+            <strong>Pro tip</strong>
+
+            <p>
+              Stay loose, keep your eyes on the target,
+              and trust your first reaction.
+            </p>
+          </div>
+        </div>
+
+      </aside>
+
+    </section>
+
+    <!-- Page Footer -->
+    <footer>
+      <span>
+        REFLEX RUSH
+        <span class="footer-dot">●</span>
+        A LITTLE GAME OF SPEED
+      </span>
+
+      <span>Built for quick reactions.</span>
+    </footer>
+
   </main>
 
+  <!-- Player Name Dialog -->
   <dialog id="nameDialog" class="name-dialog">
+
     <form method="dialog" id="nameForm">
-      <div class="modal-icon">✦</div><h2>Who's playing?</h2>
+
+      <div class="modal-icon">✦</div>
+
+      <h2>Who's playing?</h2>
+
       <p>Choose a name for the leaderboard.</p>
+
       <label for="playerName">PLAYER NAME</label>
-      <input id="playerName" maxlength="18" placeholder="e.g. Speedy" autocomplete="nickname" required>
-      <div class="modal-actions"><button class="secondary-button" value="cancel" type="button" id="cancelName">Cancel</button><button class="primary-button" value="save" type="submit">Let's go →</button></div>
+
+      <input
+        id="playerName"
+        maxlength="18"
+        placeholder="e.g. Speedy"
+        autocomplete="nickname"
+        required
+      >
+
+      <div class="modal-actions">
+
+        <button
+          class="secondary-button"
+          value="cancel"
+          type="button"
+          id="cancelName"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="primary-button"
+          value="save"
+          type="submit"
+        >
+          Let's go →
+        </button>
+
+      </div>
+
     </form>
+
   </dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Toast Notifications -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
   <script src="app.js"></script>
+
 </body>
 </html>
+```
