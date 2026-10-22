@@ -16,6 +16,8 @@ let roundEnded = false;
 let countdownId = null;
 let bestScore = Number(localStorage.getItem("reflexRushBest") || 0);
 let toastId = null;
+let allScoresVisible = false;
+let leaderboardScores = [];
 
 const target = $("target");
 const arena = $("arena");
@@ -130,25 +132,36 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function renderLeaderboard() {
+  const list = $("leaderboard");
+  const scores = allScoresVisible ? leaderboardScores : leaderboardScores.slice(0, 3);
+  $("leaderboardCount").textContent = allScoresVisible ? `ALL ${leaderboardScores.length}` : "TOP 3";
+  $("viewAllBtn").hidden = leaderboardScores.length <= 3;
+  $("viewAllBtn").textContent = allScoresVisible ? "Show top 3 ↑" : `View all ${leaderboardScores.length} scores ↓`;
+  $("viewAllBtn").setAttribute("aria-expanded", String(allScoresVisible));
+
+  if (!leaderboardScores.length) {
+    list.innerHTML = '<div class="empty-leader">No scores yet.<br>Be the first to claim the top spot!</div>';
+    return;
+  }
+  list.innerHTML = scores.map((entry, index) => {
+    const rankClass = ["gold", "silver", "bronze"][index] || "";
+    const isCurrent = entry.name === playerName;
+    return `<div class="leader-row ${isCurrent ? "current" : ""}">
+      <span class="rank ${rankClass}">${String(index + 1).padStart(2, "0")}</span>
+      <span class="leader-name" title="${escapeHtml(entry.name)}">${escapeHtml(entry.name)}</span>
+      <span class="leader-score">${entry.score}</span>
+    </div>`;
+  }).join("");
+}
+
 async function loadLeaderboard() {
   const list = $("leaderboard");
   try {
     const response = await fetch("/api/scores");
     if (!response.ok) throw new Error("Request failed");
-    const scores = await response.json();
-    if (!scores.length) {
-      list.innerHTML = '<div class="empty-leader">No scores yet.<br>Be the first to claim the top spot!</div>';
-      return;
-    }
-    list.innerHTML = scores.map((entry, index) => {
-      const rankClass = ["gold", "silver", "bronze"][index] || "";
-      const isCurrent = entry.name === playerName;
-      return `<div class="leader-row ${isCurrent ? "current" : ""}">
-        <span class="rank ${rankClass}">${String(index + 1).padStart(2, "0")}</span>
-        <span class="leader-name" title="${escapeHtml(entry.name)}">${escapeHtml(entry.name)}</span>
-        <span class="leader-score">${entry.score}</span>
-      </div>`;
-    }).join("");
+    leaderboardScores = await response.json();
+    renderLeaderboard();
   } catch (_error) {
     list.innerHTML = '<div class="empty-leader">Leaderboard unavailable.<br>Start the Node.js server to load scores.</div>';
   }
@@ -157,6 +170,10 @@ async function loadLeaderboard() {
 $("startBtn").addEventListener("click", startGame);
 target.addEventListener("click", hitTarget);
 $("refreshBtn").addEventListener("click", loadLeaderboard);
+$("viewAllBtn").addEventListener("click", () => {
+  allScoresVisible = !allScoresVisible;
+  renderLeaderboard();
+});
 $("changeNameBtn").addEventListener("click", () => {
   $("playerName").value = playerName;
   $("nameDialog").showModal();
