@@ -3,6 +3,12 @@ const POINTS_PER_HIT = 10;
 const $ = (id) => document.getElementById(id);
 
 let playerName = localStorage.getItem("reflexRushName") || "";
+// Persistent browser/device identifier lets the API update this device's existing leaderboard row.
+let deviceId = localStorage.getItem("reflexRushDeviceId");
+if (!deviceId) {
+  deviceId = (crypto.randomUUID ? crypto.randomUUID() : `rr-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  localStorage.setItem("reflexRushDeviceId", deviceId);
+}
 let score = 0;
 let timeLeft = ROUND_SECONDS;
 let active = false;
@@ -105,7 +111,7 @@ async function endGame() {
     const response = await fetch("/api/scores", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: playerName, score })
+      body: JSON.stringify({ name: playerName, score, deviceId })
     });
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));

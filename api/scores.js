@@ -21,8 +21,7 @@ module.exports = async function handler(req, res) {
         .from('scores')
         .select('id, name, score, created_at')
         .order('score', { ascending: false })
-        .order('created_at', { ascending: true })
-        .limit(10);
+        .order('created_at', { ascending: true });
       if (error) throw error;
       return res.status(200).json((data || []).map(row => ({
         id: row.id,
@@ -35,6 +34,8 @@ module.exports = async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const name = typeof body.name === 'string' ? body.name.trim().slice(0, 18) : '';
     const score = Number(body.score);
+    const deviceId = typeof body.deviceId === 'string' ? body.deviceId.trim().slice(0, 80) : '';
+    if (!deviceId) return res.status(400).json({ error: 'Missing device identifier. Please refresh and try again.' });
     if (!name) return res.status(400).json({ error: 'Please provide a player name.' });
     if (!Number.isInteger(score) || score < 0 || score > 100000) {
       return res.status(400).json({ error: 'Score must be a valid non-negative integer.' });
@@ -42,12 +43,12 @@ module.exports = async function handler(req, res) {
 
     const { data, error } = await supabase
       .from('scores')
-      .insert({ name, score })
+      .upsert({ device_id: deviceId, name, score, created_at: new Date().toISOString() }, { onConflict: 'device_id' })
       .select('id, name, score, created_at')
       .single();
     if (error) throw error;
     return res.status(201).json({
-      message: 'Score saved!',
+      message: 'Score updated!',
       entry: { id: data.id, name: data.name, score: data.score, createdAt: data.created_at }
     });
   } catch (error) {
