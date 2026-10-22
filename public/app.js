@@ -14,6 +14,7 @@ let timeLeft = ROUND_SECONDS;
 let active = false;
 let roundEnded = false;
 let countdownId = null;
+let roundDeadline = 0;
 let bestScore = Number(localStorage.getItem("reflexRushBest") || 0);
 let toastId = null;
 let allScoresVisible = false;
@@ -59,8 +60,16 @@ function startGame() {
     $("playerName").focus();
     return;
   }
+
+  // Always clear the previous round's timer before starting a new round.
+  if (countdownId !== null) {
+    clearInterval(countdownId);
+    countdownId = null;
+  }
+
   score = 0;
   timeLeft = ROUND_SECONDS;
+  roundDeadline = Date.now() + ROUND_SECONDS * 1000;
   active = true;
   roundEnded = false;
   updateStats();
@@ -69,12 +78,14 @@ function startGame() {
   $("roundStatus").textContent = "ROUND IN PROGRESS";
   $("startBtn").textContent = "Playing…";
   placeTarget();
-  clearInterval(countdownId);
+
+  // Calculate from a deadline so the timer stays accurate and reliably restarts.
   countdownId = setInterval(() => {
-    timeLeft -= 1;
+    if (!active) return;
+    timeLeft = Math.max(0, Math.ceil((roundDeadline - Date.now()) / 1000));
     updateStats();
     if (timeLeft <= 0) endGame();
-  }, 1000);
+  }, 100);
 }
 
 function hitTarget() {
@@ -92,7 +103,13 @@ async function endGame() {
   if (roundEnded) return;
   active = false;
   roundEnded = true;
-  clearInterval(countdownId);
+  if (countdownId !== null) {
+    clearInterval(countdownId);
+    countdownId = null;
+  }
+  timeLeft = 0;
+  updateStats();
+  $("startBtn").textContent = "Play again";
   target.classList.add("hidden");
   arenaMessage.classList.remove("hidden");
   $("roundStatus").textContent = "ROUND COMPLETE";
