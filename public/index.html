@@ -10,11 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +21,6 @@
 
   <main class="shell">
 
-    <!-- Header -->
     <header class="topbar">
       <a class="brand" href="#" aria-label="Reflex Rush home">
         <span class="brand-mark">✦</span>
@@ -38,11 +33,31 @@
       </span>
     </header>
 
-    <!-- Intro -->
-    <section class="intro">
-      <div class="eyebrow">
-        <span>⚡</span> READY. SET. REACT.
+    <!-- Personalized Welcome Banner -->
+    <section class="welcome-banner">
+      <div class="welcome-content">
+        <div class="welcome-date" id="welcomeDate"></div>
+
+        <h2 class="welcome-heading">
+          <span id="welcomeGreeting">Ready to react</span><span class="welcome-period">.</span>
+          <span class="welcome-emoji" id="welcomeEmoji">⚡</span>
+        </h2>
+
+        <p class="welcome-subtitle" id="welcomeSubtitle">
+          Every millisecond counts. Let's beat your best score.
+        </p>
       </div>
+
+      <div class="welcome-status">
+        <span class="welcome-status-dot"></span>
+        <span>30-SECOND CHALLENGE</span>
+        <span class="welcome-status-icon">✦</span>
+      </div>
+    </section>
+
+    <!-- Game Introduction -->
+    <section class="intro">
+      <div class="eyebrow"><span>⚡</span> READY. SET. REACT.</div>
 
       <h1>
         Your reflexes.<br>
@@ -55,32 +70,25 @@
       </p>
     </section>
 
-    <!-- Game and Leaderboard -->
+    <!-- Game Layout -->
     <section class="game-layout">
 
-      <!-- Game Card -->
+      <!-- Main Game -->
       <div class="game-card">
 
         <div class="game-head">
           <div>
             <span class="label">PLAYER</span>
-            <div class="player-name" id="playerDisplay">
-              Guest player
-            </div>
+            <div class="player-name" id="playerDisplay">Guest player</div>
           </div>
 
-          <button
-            class="text-button"
-            id="changeNameBtn"
-            type="button"
-          >
+          <button class="text-button" id="changeNameBtn" type="button">
             Change name ↗
           </button>
         </div>
 
         <!-- Statistics -->
         <div class="stats">
-
           <div class="stat">
             <span class="label">SCORE</span>
             <strong id="score">000</strong>
@@ -95,18 +103,12 @@
             <span class="label">BEST</span>
             <strong id="bestScore">000</strong>
           </div>
-
         </div>
 
         <!-- Target Arena -->
         <div class="arena-wrap">
-
           <div class="arena-top">
-            <span>
-              <i></i>
-              TARGET ZONE
-            </span>
-
+            <span><i></i> TARGET ZONE</span>
             <span id="roundStatus">READY TO PLAY</span>
           </div>
 
@@ -117,15 +119,9 @@
 
               <h2>Trust your instincts.</h2>
 
-              <p>
-                Tap start, then hit the glowing targets.
-              </p>
+              <p>Tap start, then hit the glowing targets.</p>
 
-              <button
-                class="primary-button"
-                id="startBtn"
-                type="button"
-              >
+              <button class="primary-button" id="startBtn" type="button">
                 Start game <span>→</span>
               </button>
             </div>
@@ -135,14 +131,11 @@
               id="target"
               type="button"
               aria-label="Hit target"
-            >
-              ✦
-            </button>
+            >✦</button>
 
           </div>
         </div>
 
-        <!-- Game Footer -->
         <div class="game-foot">
           <span>✦ <b>+10 POINTS</b> per hit</span>
           <span>30 seconds · One round</span>
@@ -153,11 +146,10 @@
       <!-- Sidebar -->
       <aside class="side-column">
 
-        <!-- Redesigned Leaderboard -->
+        <!-- Leaderboard -->
         <div class="leader-card leaderboard-redesign">
 
           <div class="leaderboard-header">
-
             <div>
               <div class="leaderboard-title-row">
                 <span class="leaderboard-crown">♛</span>
@@ -169,10 +161,7 @@
               </p>
             </div>
 
-            <span class="top-ten" id="leaderboardCount">
-              TOP 3
-            </span>
-
+            <span class="top-ten" id="leaderboardCount">TOP 3</span>
           </div>
 
           <!-- Top Three Podium -->
@@ -181,18 +170,13 @@
             id="leaderboardPodium"
             aria-label="Top three players"
           >
-            <div class="podium-empty">
-              Loading rankings...
-            </div>
+            <div class="podium-empty">Loading rankings...</div>
           </div>
 
           <!-- Ranking List -->
           <div class="leaderboard-list-wrapper">
-
             <div class="leader-list" id="leaderboard">
-              <div class="empty-leader">
-                Loading rankings…
-              </div>
+              <div class="empty-leader">Loading rankings…</div>
             </div>
 
             <button
@@ -204,15 +188,11 @@
               View all scores ↓
             </button>
 
-            <button
-              class="refresh-button"
-              id="refreshBtn"
-              type="button"
-            >
+            <button class="refresh-button" id="refreshBtn" type="button">
               ↻ Refresh rankings
             </button>
-
           </div>
+
         </div>
 
         <!-- Pro Tip -->
@@ -221,7 +201,6 @@
 
           <div>
             <strong>Pro tip</strong>
-
             <p>
               Stay loose, keep your eyes on the target,
               and trust your first reaction.
@@ -230,10 +209,8 @@
         </div>
 
       </aside>
-
     </section>
 
-    <!-- Page Footer -->
     <footer>
       <span>
         REFLEX RUSH
@@ -248,13 +225,10 @@
 
   <!-- Player Name Dialog -->
   <dialog id="nameDialog" class="name-dialog">
-
     <form method="dialog" id="nameForm">
-
       <div class="modal-icon">✦</div>
 
       <h2>Who's playing?</h2>
-
       <p>Choose a name for the leaderboard.</p>
 
       <label for="playerName">PLAYER NAME</label>
@@ -262,46 +236,28 @@
       <input
         id="playerName"
         maxlength="18"
-        placeholder="e.g. Speedy"
+        placeholder="Enter your name"
         autocomplete="nickname"
         required
       >
 
       <div class="modal-actions">
-
         <button
           class="secondary-button"
           value="cancel"
           type="button"
           id="cancelName"
-        >
-          Cancel
-        </button>
+        >Cancel</button>
 
-        <button
-          class="primary-button"
-          value="save"
-          type="submit"
-        >
+        <button class="primary-button" value="save" type="submit">
           Let's go →
         </button>
-
       </div>
-
     </form>
-
   </dialog>
 
-  <!-- Toast Notifications -->
-  <div
-    class="toast"
-    id="toast"
-    role="status"
-    aria-live="polite"
-  ></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
-
 </body>
 </html>
-```
